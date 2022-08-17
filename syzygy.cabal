@@ -1,0 +1,179 @@
+cabal-version:      3.0
+name:               syzygy
+version:            0.1.0.0
+synopsis:           Computational algebraic geometry, graded free resolutions, and syzygy kernel
+description:
+    Syzygy is an exact computational algebraic geometry, commutative algebra,
+    and homological syzygy engine written in pure Haskell. It implements Faugere
+    F4 Groebner basis computation, Gebauer-Moller criteria, Schreyer graded free
+    resolutions, Betti tables, Macaulay matrices, primary decomposition, Stetter-Moeller
+    eigenvalue root solving, real root isolation, cylindrical algebraic decomposition,
+    and cellular sheaf cohomology.
+license:            MIT
+license-file:       LICENSE
+author:             Aneesh
+maintainer:         aneeshkrishnaparthasarathy@gmail.com
+category:           Math, Algebra, Geometry
+build-type:         Simple
+
+common shared-properties
+    default-language:   GHC2021
+    ghc-options:
+        -Wall
+        -Wcompat
+        -Wincomplete-record-updates
+        -Wincomplete-uni-patterns
+        -Wredundant-constraints
+        -O2
+        -fprof-auto
+    default-extensions:
+        BangPatterns
+        DataKinds
+        DeriveDataTypeable
+        DeriveGeneric
+        DeriveTraversable
+        FlexibleContexts
+        FlexibleInstances
+        GADTs
+        GeneralizedNewtypeDeriving
+        InstanceSigs
+        LambdaCase
+        MultiParamTypeClasses
+        MultiWayIf
+        OverloadedStrings
+        RankNTypes
+        RecordWildCards
+        ScopedTypeVariables
+        StandaloneDeriving
+        TupleSections
+        TypeApplications
+        TypeFamilies
+
+library
+    import:             shared-properties
+    hs-source-dirs:     src
+    exposed-modules:
+        Syzygy.Core.BigInt
+        Syzygy.Core.Rational
+        Syzygy.Core.FiniteField
+        Syzygy.Core.GaloisField
+        Syzygy.Core.AlgebraicNumber
+        Syzygy.Core.Interval
+        Syzygy.Core.Dual
+        Syzygy.Monomial.Order
+        Syzygy.Monomial.Packed
+        Syzygy.Monomial.Sparse
+        Syzygy.Monomial.Operations
+        Syzygy.Polynomial.Base
+        Syzygy.Polynomial.Arithmetic
+        Syzygy.Polynomial.Division
+        Syzygy.Polynomial.Univariate
+        Syzygy.Polynomial.MultivariateGCD
+        Syzygy.Polynomial.Homogenization
+        Syzygy.Polynomial.Parser
+        Syzygy.Polynomial.Pretty
+        Syzygy.Linear.Vector
+        Syzygy.Linear.Matrix
+        Syzygy.Linear.SparseMatrix
+        Syzygy.Linear.Gaussian
+        Syzygy.Linear.SmithNormalForm
+        Syzygy.Grobner.SPolynomial
+        Syzygy.Grobner.Criteria
+        Syzygy.Grobner.Buchberger
+        Syzygy.Grobner.F4
+        Syzygy.Grobner.F5
+        Syzygy.Grobner.Reduce
+        Syzygy.Grobner.HilbertDriven
+        Syzygy.Grobner.FGLM
+        Syzygy.Resolution.Module
+        Syzygy.Resolution.ModuleOrder
+        Syzygy.Resolution.ModuleGrobner
+        Syzygy.Resolution.Syzygy
+        Syzygy.Resolution.FreeResolution
+        Syzygy.Resolution.Minimization
+        Syzygy.Resolution.Betti
+        Syzygy.Resolution.Regularity
+        Syzygy.Resolution.HilbertSeries
+        Syzygy.Geometry.Ideal
+        Syzygy.Geometry.Elimination
+        Syzygy.Geometry.Implicitization
+        Syzygy.Geometry.Colon
+        Syzygy.Geometry.Radical
+        Syzygy.Geometry.Dimension
+        Syzygy.Geometry.PrimaryDecomposition
+        Syzygy.Geometry.Singularities
+        Syzygy.Solver.Quotient
+        Syzygy.Solver.Multiplication
+        Syzygy.Solver.Stetter
+        Syzygy.Solver.RealRoot
+        Syzygy.Solver.SturmHabicht
+        Syzygy.Solver.CAD
+        Syzygy.Solver.SOS
+        Syzygy.Invariant.FiniteGroup
+        Syzygy.Invariant.Reynolds
+        Syzygy.Invariant.Molien
+        Syzygy.Invariant.Generators
+        Syzygy.Tropical.Semiring
+        Syzygy.Tropical.Hypersurface
+        Syzygy.Sheaf.Complex
+        Syzygy.Sheaf.CellularSheaf
+        Syzygy.Sheaf.Cohomology
+        Syzygy.Sheaf.Laplacian
+        Syzygy.UI.REPL
+        Syzygy.UI.CLI
+        Syzygy.UI.BettiTable
+        Syzygy.UI.VarietyVisualizer
+    build-depends:
+        base >= 4.14 && < 5,
+        containers >= 0.6,
+        bytestring >= 0.10,
+        text >= 1.2,
+        deepseq >= 1.4,
+        directory >= 1.3,
+        filepath >= 1.4,
+        process >= 1.6,
+        array >= 0.5,
+        time >= 1.9
+
+executable syzygy
+    import:             shared-properties
+    main-is:            Main.hs
+    hs-source-dirs:     app
+    build-depends:
+        base,
+        syzygy,
+        containers,
+        text,
+        directory,
+        time
+    ghc-options:
+        -rtsopts
+        -with-rtsopts=-N
+
+test-suite syzygy-test
+    import:             shared-properties
+    type:               exitcode-stdio-1.0
+    main-is:            Spec.hs
+    hs-source-dirs:     test
+    build-depends:
+        base,
+        syzygy,
+        containers,
+        text,
+        time
+    ghc-options:
+        -rtsopts
+
+benchmark syzygy-bench
+    import:             shared-properties
+    type:               exitcode-stdio-1.0
+    main-is:            Bench.hs
+    hs-source-dirs:     bench
+    build-depends:
+        base,
+        syzygy,
+        containers,
+        text,
+        time
+    ghc-options:
+        -rtsopts

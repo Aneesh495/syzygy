@@ -1,0 +1,3 @@
+packages: .
+package syzygy
+  ghc-options: -O2
