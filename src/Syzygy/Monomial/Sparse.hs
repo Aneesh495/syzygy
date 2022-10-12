@@ -29,7 +29,7 @@ import Syzygy.Monomial.Order (MonomialOrder, compareMonomial)
 -- from 0-indexed variable ID to non-zero exponent.
 -- The empty map corresponds to the identity monomial 1 = x_0^0 ... x_n^0.
 newtype SparseMonomial = SparseMonomial { unSparseMonomial :: Map.Map Int Int }
-  deriving (Eq, Generic)
+  deriving (Eq, Ord, Generic)
 
 -- | The identity monomial 1.
 sparseOne :: SparseMonomial
