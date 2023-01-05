@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Syzygy | Interactive Algebraic Geometry & Free Resolution Workbench</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <span>Syzygy</span>
+      <span class="logo-badge">WebGL Engine</span>
+      <span class="subtitle">Computational Algebraic Geometry & Graded Syzygy Theory</span>
+    </div>
+    <div class="status-indicator">
+      <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#3fb950; margin-right:6px;"></span>
+      <span style="font-size:0.8rem; color:#8b949e;">Sphere Tracer Active</span>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- 3D Raymarcher Viewport -->
+    <div class="viewport-container">
+      <canvas id="glCanvas"></canvas>
+      <div class="overlay-stats">
+        <div>Surface: <span id="statSurface">Whitney Umbrella</span></div>
+        <div>Degree: <span id="statDegree">3</span></div>
+        <div>Taubin Dist: <span id="statDist">Sphere Tracing (Hart 1996)</span></div>
+        <div>FPS: <span id="statFPS">60</span></div>
+      </div>
+    </div>
+
+    <!-- Controls & Diagnostics Sidebar -->
+    <div class="sidebar">
+      <div class="panel">
+        <h3>Algebraic Surface Presets</h3>
+        <div class="control-group">
+          <label for="surfaceSelect">Select Variety V(f) = 0</label>
+          <select id="surfaceSelect">
+            <option value="0">Whitney Umbrella (x^2 - y^2 * z = 0)</option>
+            <option value="1">Cayley Cubic (xyz + xy + yz + zx = 0)</option>
+            <option value="2">Clebsch Diagonal Cubic (27 Real Lines)</option>
+            <option value="3">Kummer Quartic (16 Nodal Singularities)</option>
+            <option value="4">Barth Sextic (65 Icosahedral Nodes)</option>
+            <option value="5">Enneper Minimal Surface (Degree 9)</option>
+            <option value="6">Calabi-Yau Cross Section (Quintic)</option>
+            <option value="7">Smooth Torus (R=1.2, r=0.45)</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <label>Iso-Level Deformation (c)</label>
+          <div class="slider-group">
+            <input type="range" id="paramC" min="-1.5" max="1.5" step="0.01" value="0.0">
+            <span class="slider-val" id="valC">0.00</span>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <label>Camera Distance</label>
+          <div class="slider-group">
+            <input type="range" id="paramZoom" min="1.5" max="8.0" step="0.1" value="3.5">
+            <span class="slider-val" id="valZoom">3.5</span>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <label for="colorModeSelect">Coloring Mode</label>
+          <select id="colorModeSelect">
+            <option value="0">Normal Gradient (World Coordinates)</option>
+            <option value="1">Phong Studio Diffuse</option>
+            <option value="2">Curvature / Gradient Magnitude</option>
+            <option value="3">Ray Depth / Ambient Occlusion</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>Graded Betti Table</h3>
+        <div class="betti-container" id="bettiTableOutput">
+       total:    1    3    2
+       ----------------------
+           0:    1    .    .
+           1:    .    3    2
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>Free Resolution Chain Complex</h3>
+        <div style="font-size:0.75rem; color:#8b949e; margin-bottom:6px;">
+          0 &rarr; R^2(-3) &rarr; R^3(-2) &rarr; R^1 &rarr; R/I &rarr; 0
+        </div>
+        <canvas id="graphCanvas"></canvas>
+      </div>
+
+      <div class="panel">
+        <h3>Homological Diagnostics</h3>
+        <div style="font-family:var(--font-mono); font-size:0.8rem; line-height:1.6; color:#8b949e;">
+          <div>Proj. Dimension pd(M) : <span style="color:#58a6ff;">2</span></div>
+          <div>Regularity reg(M)    : <span style="color:#bc8cff;">2</span></div>
+          <div>Krull Dimension      : <span style="color:#3fb950;">1 (Curve in P^3)</span></div>
+          <div>Cohen-Macaulay       : <span style="color:#d29922;">Yes (pd + depth = n)</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="raymarcher.js"></script>
+  <script src="betti_graph.js"></script>
+</body>
+</html>
