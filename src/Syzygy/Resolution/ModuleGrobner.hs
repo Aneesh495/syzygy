@@ -55,7 +55,7 @@ dividesModLeadingTerm f g =
     (Just (ModTerm cF mF compF), Just (ModTerm cG mG compG))
       | compF == compG && sparseDivides mG mF ->
           let qCoeff = cF / cG
-              qExp = sparseDiv mF mG
+              qExp = sparseDiv mG mF
               polyTerm = Poly [Term qCoeff qExp] DegRevLex
           in Just (qCoeff, polyTerm)
       | otherwise -> Nothing
@@ -113,7 +113,7 @@ moduleDivision order numVars f divisors =
              case filter (\(_, ModTerm _ mG compG) -> compG == compP && sparseDivides mG mP) candidates of
                ((i, ModTerm cG mG _):_) ->
                  let qCoeff = cP / cG
-                     qExp = sparseDiv mP mG
+                     qExp = sparseDiv mG mP
                      qPoly = Poly [Term qCoeff qExp] (extractPolyOrder order)
                  in Just (i, qPoly)
                [] -> Nothing
@@ -147,8 +147,8 @@ moduleSPolynomial order numVars gA gB =
       | compA == compB ->
           let lcmM = sparseLCM mA mB
               pOrder = extractPolyOrder order
-              multA = Poly [Term (1 / cA) (sparseDiv lcmM mA)] pOrder
-              multB = Poly [Term (1 / cB) (sparseDiv lcmM mB)] pOrder
+              multA = Poly [Term (1 / cA) (sparseDiv mA lcmM)] pOrder
+              multB = Poly [Term (1 / cB) (sparseDiv mB lcmM)] pOrder
               termA = mulPolyModPoly multA gA
               termB = mulPolyModPoly multB gB
           in canonicalizeModPoly order numVars (subModPoly termA termB)

@@ -16,7 +16,6 @@ import Syzygy.Monomial.Order (MonomialOrder(..))
 import Syzygy.Monomial.Sparse
   ( SparseMonomial(..)
   , sparseVar
-  , sparseMaxVar
   )
 import Syzygy.Polynomial.Base
   ( Poly(..)
@@ -118,17 +117,16 @@ cad1D polys =
      ]
   where
     isolateRoots p =
-      let coeffs = [ getConstCoeff (reorderPolyDeg i p) | i <- [0 .. maxVar p] ]
+      let d = degVar0 p
+          coeffs = [ reorderPolyDeg i p | i <- [0 .. d] ]
           univar = UnivariatePoly coeffs
       in isolateRealRoots univar
 
-    maxVar (Poly terms _) =
-      maximum (-1 : [ sparseMaxVar m | Term _ m <- terms ])
+    degVar0 (Poly terms _) =
+      maximum (0 : [ Map.findWithDefault 0 0 m | Term _ (SparseMonomial m) <- terms ])
 
-    reorderPolyDeg varId (Poly terms _) =
-      sum [ c | Term c (SparseMonomial m) <- terms, Map.lookup 0 m == Just varId ]
-
-    getConstCoeff c = c
+    reorderPolyDeg expVal (Poly terms _) =
+      sum [ c | Term c (SparseMonomial m) <- terms, Map.findWithDefault 0 0 m == expVal ]
 
     sortIntervals [] = []
     sortIntervals (x:xs) =

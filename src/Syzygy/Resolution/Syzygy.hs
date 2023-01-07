@@ -92,8 +92,8 @@ syzygyModule order numVars gens =
       case (modLeadingTerm gI, modLeadingTerm gJ) of
         (Just (ModTerm cI mI _), Just (ModTerm cJ mJ _)) ->
           let lcmM = sparseLCM mI mJ
-              uIExp = sparseDiv lcmM mI
-              uJExp = sparseDiv lcmM mJ
+              uIExp = sparseDiv mI lcmM
+              uJExp = sparseDiv mJ lcmM
               uIPoly = Poly [Term (1 / cI) uIExp] pOrder
               uJPoly = Poly [Term (1 / cJ) uJExp] pOrder
               sPoly = canonicalizeModPoly order numVars
