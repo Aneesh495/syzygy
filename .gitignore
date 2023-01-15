@@ -11,9 +11,7 @@ cabal.sandbox.config
 *.hp
 *.eventlog
 .DS_Store
-bin/syzygy
-bin/test_runner
-bin/bench_runner
+bin/
 c/*.o
 c/*.so
 c/*.dylib

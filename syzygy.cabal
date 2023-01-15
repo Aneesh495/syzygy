@@ -148,7 +148,6 @@ executable syzygy
         time
     ghc-options:
         -rtsopts
-        -with-rtsopts=-N
 
 test-suite syzygy-test
     import:             shared-properties

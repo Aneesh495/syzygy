@@ -26,6 +26,11 @@ bench:
 	$(GHC) $(GHCFLAGS) bench/Bench.hs -o bin/bench_runner
 	./bin/bench_runner
 
+bench-c:
+	@mkdir -p bin
+	$(CC) $(CFLAGS) c/bench_kernel.c c/syzygy_kernel.c -o bin/bench_kernel
+	./bin/bench_kernel
+
 check-dashes:
 	python3 tools/check_no_em_dashes.py
 

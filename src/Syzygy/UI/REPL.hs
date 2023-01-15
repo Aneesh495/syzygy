@@ -26,6 +26,7 @@ import Syzygy.Monomial.Order (MonomialOrder(..))
 import Syzygy.Polynomial.Base (Poly(..))
 import Syzygy.Polynomial.Parser (parsePoly, defaultVarNames)
 import Syzygy.Polynomial.Pretty (prettyUnicode)
+import Syzygy.Grobner.Buchberger (buchberger)
 import Syzygy.Grobner.Reduce (reducedGrobnerBasis)
 import Syzygy.Resolution.FreeResolution (freeResolution)
 import Syzygy.Resolution.Minimization (minimizeComplex)
@@ -164,7 +165,7 @@ handleCommand state cmdLine =
          if null gens
            then putStrLn "Current ideal is empty."
            else do
-             let gb = reducedGrobnerBasis gens
+             let gb = reducedGrobnerBasis (buchberger gens)
                  vars = replVarNames state
              putStrLn "\ESC[1mReduced Groebner Basis:\ESC[0m"
              mapM_ (\(i, g) -> putStrLn $ "  g_" ++ show (i :: Int) ++ " = " ++ prettyUnicode vars g) (zip [1..] (gb :: [Poly Rat]))
@@ -217,7 +218,7 @@ handleCommand state cmdLine =
          if null gens
            then putStrLn "Dimension of empty ideal: ambient space"
            else do
-             let gb = reducedGrobnerBasis gens
+             let gb = reducedGrobnerBasis (buchberger gens)
                  d = idealDimension n gb
              putStrLn $ "Krull dimension dim(V(I)) = " ++ show d
          return state

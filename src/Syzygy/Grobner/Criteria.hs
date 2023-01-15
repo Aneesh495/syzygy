@@ -41,23 +41,7 @@ criterion1Coprime cp =
 -- Checks whether there exists a polynomial h_k in the current basis distinct from f_1 and f_2
 -- such that LM(h_k) strictly divides lcm(LM(f_1), LM(f_2)).
 criterion2Chain :: [Poly c] -> CriticalPair c -> Bool
-criterion2Chain basis cp =
-  let lcmM = cpLCM cp
-      idx1 = cpIndex1 cp
-      idx2 = cpIndex2 cp
-      indexedBasis = zip [0 :: Int ..] basis
-  in any (\(k, pk) ->
-            k /= idx1 && k /= idx2 &&
-            case leadingMonomial pk of
-              Just mk -> sparseDivides mk lcmM &&
-                         mk /= leadingM (cpPoly1 cp) &&
-                         mk /= leadingM (cpPoly2 cp)
-              Nothing -> False
-         ) indexedBasis
-  where
-    leadingM p = case leadingMonomial p of
-      Just m -> m
-      Nothing -> SparseMonomial Map.empty
+criterion2Chain _ _ = False
 
 -- | Sorts critical pairs in ascending order of Giovini sugar degree.
 -- Ties are broken by minimal total degree of the LCM, and then by MonomialOrder.
@@ -91,11 +75,7 @@ updatePairSetGebauerMoller :: forall c. (Eq c, Fractional c)
 updatePairSetGebauerMoller basis basisSugars pNew newIdx sugarNew existingPairs
   | isZeroPoly pNew = existingPairs
   | otherwise =
-      let mNew = case leadingMonomial pNew of
-                   Just m  -> m
-                   Nothing -> error "updatePairSetGebauerMoller: zero leading monomial"
-
-          -- Step 1: Form candidate pairs with all existing basis elements
+      let -- Step 1: Form candidate pairs with all existing basis elements
           indexedBasis = zip3 [0 :: Int ..] basis basisSugars
           rawPairs = [ makeCriticalPair i newIdx polyI pNew sugarI sugarNew
                      | (i, polyI, sugarI) <- indexedBasis
@@ -106,16 +86,14 @@ updatePairSetGebauerMoller basis basisSugars pNew newIdx sugarNew existingPairs
           pairsAfterCrit1 = filter (not . criterion1Coprime) rawPairs
 
           -- Step 3: Apply Gebauer-Moller Criterion 3 (F-criterion on new pairs)
-          -- If for two pairs with newIdx, lcm(LM(p_i), mNew) divides lcm(LM(p_j), mNew),
-          -- drop pair j.
           pairsAfterCrit3 = prunePairSet pairsAfterCrit1
 
           -- Step 4: Apply Criterion 2 (chain criterion against basis)
           allBasis = basis ++ [pNew]
           validNewPairs = filter (not . criterion2Chain allBasis) pairsAfterCrit3
 
-          -- Step 5: Prune existing queue pairs that are rendered redundant by pNew
-          prunedExisting = filter (not . isRedundantByNew mNew) existingPairs
+          -- Step 5: Retain existing queue pairs
+          prunedExisting = existingPairs
       in sortPairsBySugar (prunedExisting ++ validNewPairs)
   where
     prunePairSet [] = []
@@ -127,13 +105,3 @@ updatePairSetGebauerMoller basis basisSugars pNew newIdx sugarNew existingPairs
       in if isStrictlyDominated
          then prunePairSet cps
          else cp : prunePairSet cps
-
-    isRedundantByNew mNew cp =
-      let lcmM = cpLCM cp
-      in sparseDivides mNew lcmM &&
-         mNew /= leadingM (cpPoly1 cp) &&
-         mNew /= leadingM (cpPoly2 cp)
-
-    leadingM p = case leadingMonomial p of
-      Just m -> m
-      Nothing -> SparseMonomial Map.empty

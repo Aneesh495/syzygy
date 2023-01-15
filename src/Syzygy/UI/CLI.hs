@@ -30,6 +30,7 @@ import Syzygy.Monomial.Order (MonomialOrder(..))
 import Syzygy.Polynomial.Base (Poly(..))
 import Syzygy.Polynomial.Parser (parsePoly, defaultVarNames)
 import Syzygy.Polynomial.Pretty (prettyUnicode)
+import Syzygy.Grobner.Buchberger (buchberger)
 import Syzygy.Grobner.Reduce (reducedGrobnerBasis)
 import Syzygy.Resolution.FreeResolution (freeResolution)
 import Syzygy.Resolution.Minimization (minimizeComplex)
@@ -126,7 +127,7 @@ runGrobner args = do
     else case mapM (parsePoly ord vars) polyStrs of
            Left err -> putStrLn ("Parse error: " ++ err) >> exitFailure
            Right (polys :: [Poly Rat]) -> do
-             let gb = reducedGrobnerBasis polys
+             let gb = reducedGrobnerBasis (buchberger polys)
              putStrLn "\ESC[1mReduced Groebner Basis:\ESC[0m"
              mapM_ (\(i, g) -> putStrLn $ "  g_" ++ show (i :: Int) ++ " = " ++ prettyUnicode vars g) (zip [1..] gb)
 
